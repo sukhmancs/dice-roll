@@ -1,0 +1,320 @@
+<!-- StAuth10244: I Sukhmanjeet Singh, 000838215 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else. -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>React Dice Roller</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <style>  
+    #main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;      
+      min-height: 100vh;
+      min-width: 100vw;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  
+    button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .die {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 100px;
+    }
+
+    .dice.roll {
+      animation: rotate 2s linear;
+    }
+  
+    span {
+      color: #888;
+      font-weight: bold;
+    }
+    
+    body {            
+      margin: 0;
+      user-select: none;
+      min-block-size: 100svb;
+      display: grid;
+      place-items: center;
+      color: hsl(206 6% 24%);
+      background: hsl(210 6% 87%);
+      font-family: system-ui;                  
+      /*background-image: 
+      url('data:image/svg+xml,<svg viewBox="-7.5 -2.5 15 10" xmlns="http://www.w3.org/2000/svg">\
+          <circle id="d" fill="hsl(210 6%25 80%25)" r="0.3" />\
+            <g transform="translate(5 0)">\
+                <use href="%23d" />\
+                <use x="1" y="1" href="%23d" />\
+                <use x="-1" y="1" href="%23d" />\
+                <use x="-1" y="-1" href="%23d" />\
+                <use x="1" y="-1" href="%23d" />\
+            </g>\
+            <g transform="translate(-5 0)">\
+                <use x="1" y="1" href="%23d" />\
+                <use x="-1" y="1" href="%23d" />\
+                <use x="-1" y="-1" href="%23d" />\
+                <use x="1" y="-1" href="%23d" />\
+            </g>\
+            <g transform="translate(0 5)">\
+                <use x="1" href="%23d" />\
+                <use x="-1" href="%23d" />\
+                <use x="1" y="1" href="%23d" />\
+                <use x="-1" y="1" href="%23d" />\
+                <use x="-1" y="-1" href="%23d" />\
+                <use x="1" y="-1" href="%23d" />\
+            </g>\
+            <g transform="translate(5 5)">\
+                <use x="-1" y="1" href="%23d" />\
+                <use x="1" y="-1" href="%23d" />\
+            </g>\
+            <g transform="translate(-5 5)">\
+                <use href="%23d" />\
+                <use x="-1" y="1" href="%23d" />\
+                <use x="1" y="-1" href="%23d" />\
+            </g>\
+        </svg>');*/
+      background-size: 200px;
+    }
+
+    .dice {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      transform-style: preserve-3d;
+      transform: rotateY(185deg) rotateX(150deg) rotateZ(315deg);
+      transition: transform 0.6s ease-in-out;
+      animation: rotate 5s linear infinite;
+    }
+
+    .side {
+      width: 100%;
+      height: 100%;
+      background: #da0060;
+      border: 2px solid black;
+      position: absolute;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:before {
+        content: "";
+        width: 20%;
+        height: 20%;
+        background: black;
+        border-radius: 50%;
+      }
+    }
+
+    .base {
+      width: 100%;
+      height: 100%;
+      font-size: 40px;
+      transform: translateY(73px) rotateX(90deg);
+        border: 0;
+        background: blue;
+    }
+
+    .one {
+        transform: translateZ(100px);
+    }
+
+    .two {
+        transform: translateX(-100px) rotateY(-90deg);
+      &:before {
+        background: transparent;
+        box-shadow: 
+          #000 -50px -50px 0px 0px, 
+          #000 50px 50px 0px 0px;
+      }
+    }
+
+    .three {
+        transform: translateY(100px) rotateX(90deg);
+      &:before {
+        box-shadow: 
+          #000 -50px 50px 0px 0px, 
+          #000 50px -50px 0px 0px;
+      }
+    }
+
+    .four {
+        transform: translateY(-100px) rotateX(90deg);
+      &:before {
+        background: transparent;
+        box-shadow: 
+          #000 -50px 50px 0px 0px, 
+          #000 -50px -50px 0px 0px,
+          #000 50px 50px 0px 0px, 
+          #000 50px -50px 0px 0px;
+      }
+    }
+
+    .five {
+        transform: translateX(100px) rotateY(90deg);
+      &:before {
+        box-shadow: 
+          #000 -50px -50px 0px 0px, 
+          #000 -50px 50px 0px 0px,
+          #000 50px -50px 0px 0px, 
+          #000 50px 50px 0px 0px;
+      }
+    }
+
+    .six {
+        transform: translateZ(-100px);
+      &:before {
+        background: transparent;
+        box-shadow: 
+          #000 -50px -50px 0px 0px, 
+          #000 -50px 0px 0px 0px,
+          #000 -50px 50px 0px 0px, 
+          #000 50px -50px 0px 0px, 
+          #000 50px 0px 0px 0px,
+          #000 50px 50px 0px 0px;
+      }
+    }
+    
+    .center {
+      background: transparent;
+      border: 0;
+      font-size: 40px;
+      color: white;      
+      &:before {
+        content: "";
+        width: 20%;
+        height: 20%;
+        background: black;
+        border-radius: 50%;
+      }
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotateY(0) rotateX(30deg) rotateZ(30deg);
+      }
+      to {
+        transform: rotateY(360deg) rotateX(30deg) rotateZ(30deg);
+      }
+    }   
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+
+    /**
+     * A simple dice component.
+     * This component displays a dice with a number on it.
+     * 
+     * @component
+     * @param {Object} props - The props object
+     * @param {number} props.number - The number to display on the dice
+     * @param {Function} props.onClick - The click handler
+     * @param {boolean} props.rolling - Whether the dice is rolling
+     * @returns {JSX.Element} - The dice component
+     */
+     function Dice({ number, onClick, rolling }) {
+        const sideClasses = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+        return (
+          <div className={`dice ${rolling ? 'roll' : ''}`} onClick={onClick}>
+            {sideClasses.map((sideClass, index) => (
+              <div key={index} className={`side ${sideClass} ${number === index + 1 ? 'base' : ''}`}>
+                {number === index + 1 ? number : ''}
+              </div>              
+            ))}
+            {number > sideClasses.length ? <div className="side center">{number}</div>: null}
+          </div>
+        );
+      }
+
+    /**
+     * Dice roller component
+     * This component allows the user to roll a dice and see the result
+     * 
+     * @component
+     * @returns {JSX.Element} - The dice roller component
+     */
+    function DiceRoller() {
+      const [diceCount, setDiceCount] = React.useState(1);
+      const [diceSides, setDiceSides] = React.useState(6);
+      const [diceNumbers, setDiceNumbers] = React.useState([1]);
+      const [rolling, setRolling] = React.useState(false);
+
+      const incrementDice = () => {
+        setDiceCount(diceCount + 1);
+        setDiceNumbers([...diceNumbers, 1]);
+      };
+
+      const resetDice = () => {
+        setDiceCount(1);
+        setDiceNumbers([1]);
+      };
+
+      const incrementSides = () => {
+        if (diceSides < 6) {
+          setDiceSides(diceSides + 1);
+        }
+      };
+
+      const decrementSides = () => {
+        if (diceSides > 1) {
+          setDiceSides(diceSides - 1);
+        }
+      };
+
+      const rollDice = () => {
+        setRolling(true);
+        const newNumbers = diceNumbers.map(() => Math.floor(Math.random() * diceSides) + 1);
+        setDiceNumbers(newNumbers);
+        setTimeout(() => {
+          setRolling(false);
+        }, 600); // 600ms is the duration of the roll animation
+      };
+
+      const incrementDiceNumber = (index) => {
+        setDiceNumbers(diceNumbers.map((num, i) => {
+          if (i === index) {
+            return num < diceSides ? num + 1 : 1;
+          }
+        return num;
+        }));
+      };
+
+      return (
+        <div id="main">
+          <div>
+            <span onClick={incrementDice}>Number of dice: {diceCount}+</span> <button onClick={resetDice}>Reset</button>
+          </div>
+          <div>
+            Number of sides: {diceSides} <button onClick={incrementSides}>+</button> <button onClick={decrementSides}>-</button>
+          </div>
+          <div className="die">
+            {diceNumbers.map((number, index) => (
+              <Dice key={index} number={number} onClick={() => incrementDiceNumber(index)} rolling={rolling} />
+            ))}
+          </div>
+          <button onClick={rollDice}>Roll</button>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<DiceRoller />, document.getElementById('root'));
+  </script>
+</body>
+</html>
